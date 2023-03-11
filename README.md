@@ -4,6 +4,8 @@ The 'var' class represents an immutable object wrapper. It will accept any objec
 
 The 'var' class supports both a functional and object oriented API. But it requires that any object utilizing its API override a series of functions described below, in order to utilize run-time polymorphism without object inheritance, through the 'var' API.
 
+The var object itself is not immutable.  It can be reassign data types after being initialized.  The data is manages is immutable, in that a copy of the data type must be created first, to then be manipulated.  Then reassign to a 'var', or another instance of the data type.  
+
 The 'var' class also supports both pass by reference and pass by value. Any object it holds can be safely cast to a pointer of the object type. If the type cast is made to an incorrect data type then a std::null_ptr is returned instead.
 
 All object can also be copied to another instance of the type safely. If an incorrect type is specified, an instance of that type will still be made using the default construction for the type being copied.
@@ -28,4 +30,6 @@ Should produce an output of:
     b = (0 1 2 3 4 5 6 7 8 9 10 string)
     c = ((0 1 2 3 4 5 6 7) 0 1 2 3 4 5 6 7 8 9 10 string)
 ```
+The 'expression' class was initial design using a std::vector<var>.  But due it it needing to be copied at every manipulation, the performance was slowed down considerably. By using Lisp like nodes only the index to manipulated requires being copied, instead of a whole vector.  
+
 Additional data types will be added to this project, like immutable persistent maps.  'var' is a work in progress, and will receive updates as needed.  
