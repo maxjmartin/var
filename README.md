@@ -6,8 +6,6 @@ var a = 42;
 ```
 Instances of 'var' can be reassign new values.  The immutability of the class is in the data assigned to the instance of 'var'.  It can not be changed without a copy being made.  Multiple instance of 'var' can reference 'a' in the example.  If a gets a new value, all of the other instances of 'var' would still point to the original '42' assign to 'a'.  While 'a' simply points to the new value.
 
-The fundamental structure of the 'var' data type was inspired and extended from a presentation entitled: Title: Value Semantics and Concept-based Polymorphism By - Sean Parent (http://sean-parent.stlab.cc/papers-and-presentations)
-
 A 'node', 'term', and 'expression', classes are also defined.  
 
 The 'node' class is simply a Lisp like node, which can be used to create other data type with immutability.  While the 'term' class only differs in that it tracks the number of nodes within the term. 
