@@ -1,24 +1,18 @@
 # var - A Part of Oliver
 
-The 'var' class represents an immutable object wrapper. It will accept any object assigned to by the assignment operator '='. Example: var a = 42;
-
-The 'var' class supports both a functional and object oriented API. But it requires that any object utilizing its API override a series of functions described below, in order to utilize run-time polymorphism without object inheritance, through the 'var' API.
-
-The var object itself is not immutable.  It can be reassign data types after being initialized.  The data is manages is immutable, in that a copy of the data type must be created first, to then be manipulated.  Then reassign to a 'var', or another instance of the data type.  
-
-The 'var' class also supports both pass by reference and pass by value. Any object it holds can be safely cast to a pointer of the object type. If the type cast is made to an incorrect data type then a std::null_ptr is returned instead.
-
-All object can also be copied to another instance of the type safely. If an incorrect type is specified, an instance of that type will still be made using the default construction for the type being copied.
+The 'var' class represents an immutable fully functional object wrapper. It will accept any object assigned to by the assignment operator '='. Example: 
+```
+var a = 42;
+```
+Instances of 'var' can be reassign new values.  The immutability of the class is in the data assigned to the instance of 'var'.  It can not be changed without a copy being made.  Multiple instance of 'var' can reference 'a' in the example.  If a gets a new value, all of the other instances of 'var' would still point to the original '42' assign to 'a'.  While 'a' simply points to the new value.
 
 The fundamental structure of the 'var' data type was inspired and extended from a presentation entitled: Title: Value Semantics and Concept-based Polymorphism By - Sean Parent (http://sean-parent.stlab.cc/papers-and-presentations)
 
-The 'node', 'term', and 'expression', classes are also made as part of 'var'.
+A 'node', 'term', and 'expression', classes are also defined.  
 
-The 'node' class is simply a Lisp like node, which can be used to create other data type with immutability.
+The 'node' class is simply a Lisp like node, which can be used to create other data type with immutability.  While the 'term' class only differs in that it tracks the number of nodes within the term. 
 
-The 'term' class is almost identical to the 'node' class. The primary difference between the two, is that a 'term' keeps track of the length of 'node's it manages.
-
-The 'expression' class is a fully immutable double ended que implemented using 'terms'. It is designed with an overloading of the comma operator so to allow data to be appended to any 'expression' in a common sense way. Examples:
+The 'expression' class is defined by two 'term's, to create a [Real Time Queue](https://en.wikipedia.org/wiki/Real-time_queue) deque.   
 ```
     var a = Olly::expression(0, 1, 2, 3, 4, 5, 6, 7);
     var b = (a, 8, 9, 10L, std::string("string"));
@@ -30,6 +24,72 @@ Should produce an output of:
     b = (0 1 2 3 4 5 6 7 8 9 10 string)
     c = ((0 1 2 3 4 5 6 7) 0 1 2 3 4 5 6 7 8 9 10 string)
 ```
-The 'expression' class was initial design using a std::vector<var>.  But due it it needing to be copied at every manipulation, the performance was slowed down considerably. By using Lisp like nodes only the index to manipulated requires being copied, instead of a whole vector.  
+**Note** - That commas, are overridden to append data to the end of expressions.
 
-Additional data types will be added to this project, like immutable persistent maps.  'var' is a work in progress, and will receive updates as needed.  
+### Object Manipulation
+
+Object managed by a 'var' can be directly manipulated by overriding the 'var' 'interface_type' class methods, using friend methods outlined below.  It is highly recommended to override the first grouping of functions.  While the rest should be overwritten as needed.  
+```
+    template<typename T>            
+    std::string     _type_(const T& self);                              //  Type Name          
+    std::string      _cat_(const T& self);                              //  Category Name  
+    bool              _is_(const T& self);                              //  Boolean Conversion  
+    void             _str_(std::stringstream& out, const T& self);      //  String Conversion  
+    void            _repr_(std::stringstream& out, const T& self);      //  String Representation  
+    double          _comp_(const T& self, var other);                   //  Comparison Between Variables  
+
+    var             _b_and_(const T& self, var other);                  //  Logical Conjunction  
+    var             _b_or_ (const T& self, var other);                  //  Logical Inclusive Disjunction  
+    var             _b_xor_(const T& self, var other);                  //  Logical Exclusive Disjunction  
+    var             _b_neg_(const T& self);                             //  Negation  
+    var             _u_add_(const T& self);                             //  Unary Addition  
+    var             _u_neg_(const T& self);                             //  Unary Compliment  
+
+    var               _add_(const T& self, var other);                  //  Addition or Concatenation  
+    var               _sub_(const T& self, var other);                  //  Subtraction or Division  
+    var               _mul_(const T& self, var other);                  //  Multiplication  
+    var               _div_(const T& self, var other);                  //  Division  
+    var               _mod_(const T& self, var other);                  //  Modulation  
+    var             _f_div_(const T& self, var other);                  //  Floor Division  
+    var               _rem_(const T& self, var other);                  //  Remainder                         
+    var               _pow_(const T& self, var other);                  //  Raise to Power of  
+    var              _root_(const T& self, var other);                  //  Reduce to Power of  
+
+    bool             _has_(const T& self, var other);                   //  Check if an object has an element  
+    std::size_t     _size_(const T& self);                              //  Length Of  
+    var             _lead_(const T& self);                              //  Lead Element Of  
+    var             _last_(const T& self);                              //  Last Element Of  
+    var             _join_(const T& self, var other);                   // Prepend Lead Element Of  
+    var             _link_(const T& self, var other);                   // Prepend Lead Element Of  
+    var             _next_(const T& self);                              //  Drop The Leading Element  
+    var             _prev_(const T& self);                              //  Drop The Leading Element  
+    var             _reverse_(const T& self);                           //  Reverse The Elements Of  
+
+    var              _get_(const T& self, var other);                   //  Retrieve A Selection From  
+    var              _set_(const T& self, var other, var val);          //  Set A Selection Of  
+    var              _del_(const T& self, var other);                   //  Remove A Selection From  
+
+    std::size_t           _hash_(const T& self);                        //  Hash Value  
+    OP_CODE            _op_code_(const T& self);                        //  Return An Operation Code 
+    bool            _is_nothing_(const T& self);                        //  Determine If A Var Is Undefined 
+    std::string           _help_(const T& self);                        //  Return A Help String 
+```
+For example in the 'node' class the overrides look like this.
+```
+    friend std::string   _type_(const node& self);
+    friend bool            _is_(const node& self);
+    friend double        _comp_(const node& self, const var& other);
+
+    friend void            _str_(std::stringstream& out, const node& self);
+    friend void           _repr_(std::stringstream& out, const node& self);
+
+    friend std::size_t    _size_(const node& self);
+    friend var            _lead_(const node& self);
+    friend var            _join_(const node& self, const var& other);
+    friend var            _next_(const node& self);
+    friend var         _reverse_(const node& self);
+```
+**Note** - Be care full of large collections, stored within a 'var'.  Each manipulation will require a copy of the entire collection.  Instead using a functional version of the collection, in which single nodes are being manipulated, will provide faster performance. 
+
+### Data Access
+The data held by a 'var' can be accessed by a templated cast, and copy method.  If cast to an invalid type, a null_ptr is returned.  Else if copied to an invalid type a default constructor of the type copied to is returned.   
