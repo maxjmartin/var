@@ -57,8 +57,8 @@ Object managed by a 'var' can be directly manipulated by overriding the 'var' 'i
     std::size_t     _size_(const T& self);                              //  Length Of  
     var             _lead_(const T& self);                              //  Lead Element Of  
     var             _last_(const T& self);                              //  Last Element Of  
-    var             _join_(const T& self, var other);                   // Prepend Lead Element Of  
-    var             _link_(const T& self, var other);                   // Prepend Lead Element Of  
+    var             _join_(const T& self, var other);                   //  Prepend Lead Element Of  
+    var             _link_(const T& self, var other);                   //  Prepend Last Element Of  
     var             _next_(const T& self);                              //  Drop The Leading Element  
     var             _prev_(const T& self);                              //  Drop The Leading Element  
     var          _reverse_(const T& self);                              //  Reverse The Elements Of  
