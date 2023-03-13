@@ -61,7 +61,7 @@ Object managed by a 'var' can be directly manipulated by overriding the 'var' 'i
     var             _link_(const T& self, var other);                   // Prepend Lead Element Of  
     var             _next_(const T& self);                              //  Drop The Leading Element  
     var             _prev_(const T& self);                              //  Drop The Leading Element  
-    var             _reverse_(const T& self);                           //  Reverse The Elements Of  
+    var          _reverse_(const T& self);                              //  Reverse The Elements Of  
 
     var              _get_(const T& self, var other);                   //  Retrieve A Selection From  
     var              _set_(const T& self, var other, var val);          //  Set A Selection Of  
